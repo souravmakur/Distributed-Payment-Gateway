@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: razorpay
+  datasource:
+    url: jdbc:postgresql://localhost:5432/DistributedPG
+    username: postgres
+    password: Youcantseeme@2306
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
