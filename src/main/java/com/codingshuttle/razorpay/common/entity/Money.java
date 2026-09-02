@@ -12,11 +12,11 @@ public class Money {
         this.currency = currency;
     }
 
-    public Money of(int amountUnits, String currency) {
+    public static Money of(int amountUnits, String currency) {
         return new Money(amountUnits, currency);
     }
 
-    public Money inr(int amountUnits) {
+    public static Money inr(int amountUnits) {
         return new Money(amountUnits, "INR");
     }
 
