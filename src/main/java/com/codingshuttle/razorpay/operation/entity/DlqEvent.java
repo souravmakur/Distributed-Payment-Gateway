@@ -20,6 +20,9 @@ public class DlqEvent {
     @Column(nullable = false)
     private UUID merchantId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private WebhookEvent webhookEvent;
+
     @Column(length = 1000)
     private String finalError;
 
