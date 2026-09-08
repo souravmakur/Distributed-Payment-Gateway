@@ -61,4 +61,6 @@ public class Settlement {
     private String bankReference;
 
     private LocalDateTime processedAt;
+
+    private LocalDateTime MadeAt;
 }
