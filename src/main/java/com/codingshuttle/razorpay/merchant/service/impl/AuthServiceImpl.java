@@ -1,8 +1,10 @@
 package com.codingshuttle.razorpay.merchant.service.impl;
 
 import com.codingshuttle.razorpay.common.enums.MerchantStatus;
+import com.codingshuttle.razorpay.common.enums.UserRole;
 import com.codingshuttle.razorpay.merchant.dto.request.MerchnantSignupRequest;
 import com.codingshuttle.razorpay.merchant.dto.response.MerchantResponse;
+import com.codingshuttle.razorpay.merchant.entity.AppUser;
 import com.codingshuttle.razorpay.merchant.entity.Merchant;
 import com.codingshuttle.razorpay.merchant.repository.AppUserRepository;
 import com.codingshuttle.razorpay.merchant.repository.MerchantRepository;
@@ -35,6 +37,16 @@ public class AuthServiceImpl implements AuthService {
                 .email(request.email())
                 .status(MerchantStatus.PENDING_KYC)
                 .build();
+        merchant = merchantRepository.save(merchant);
+
+        AppUser appUser = AppUser.builder()
+                .email(request.email())
+                .merchant(merchant)
+                .passwordHash(request.password())
+                .role(UserRole.OWNER)
+                .build();
+        appUserRepository.save(appUser);
+
 
         return null;
     }
