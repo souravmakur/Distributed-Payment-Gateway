@@ -42,12 +42,14 @@ public class AuthServiceImpl implements AuthService {
         AppUser appUser = AppUser.builder()
                 .email(request.email())
                 .merchant(merchant)
-                .passwordHash(request.password())
+                .passwordHash(request.password()) //TODO: encrypt with Bcrypt
                 .role(UserRole.OWNER)
                 .build();
         appUserRepository.save(appUser);
 
 
-        return null;
+        return new MerchantResponse(merchant.getId(), merchant.getName(),
+                merchant.getEmail(), merchant.getBusinessName(),
+                merchant.getBusinessType(), merchant.getStatus());
     }
 }
