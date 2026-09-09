@@ -3,9 +3,7 @@ package com.codingshuttle.razorpay.merchant.entity;
 import com.codingshuttle.razorpay.common.enums.BusinessType;
 import com.codingshuttle.razorpay.common.enums.MerchantStatus;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -13,8 +11,10 @@ import java.util.UUID;
 @Table(name = "merchant")
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
+@Data
 public class Merchant {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,7 +34,7 @@ public class Merchant {
     private BusinessType businessType;
 
     @Column(length = 200)
-    private String businessname;
+    private String businessName;
 
     @Column(length = 200)
     private String websiteUrl;

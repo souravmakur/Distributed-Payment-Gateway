@@ -1,7 +1,11 @@
 package com.codingshuttle.razorpay.merchant.service.impl;
 
+import com.codingshuttle.razorpay.common.enums.MerchantStatus;
 import com.codingshuttle.razorpay.merchant.dto.request.MerchnantSignupRequest;
 import com.codingshuttle.razorpay.merchant.dto.response.MerchantResponse;
+import com.codingshuttle.razorpay.merchant.entity.Merchant;
+import com.codingshuttle.razorpay.merchant.repository.AppUserRepository;
+import com.codingshuttle.razorpay.merchant.repository.MerchantRepository;
 import com.codingshuttle.razorpay.merchant.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +20,22 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AuthServiceImpl implements AuthService {
 
+    private final AppUserRepository appUserRepository;
+    private final MerchantRepository merchantRepository;
+
     @Override
     public MerchantResponse signup(MerchnantSignupRequest request) {
+        if(merchantRepository.existsByEmail(request.email())) {
+            throw new RuntimeException(("Merchant with email already exists."+request.email()));
+        }
+        Merchant merchant = Merchant.builder()
+                .businessName(request.businessName())
+                .businessType(request.businessType())
+                .name(request.name())
+                .email(request.email())
+                .status(MerchantStatus.PENDING_KYC)
+                .build();
+
         return null;
     }
 }
