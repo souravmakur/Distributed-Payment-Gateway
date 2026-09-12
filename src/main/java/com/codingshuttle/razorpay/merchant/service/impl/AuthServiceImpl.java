@@ -9,6 +9,7 @@ import com.codingshuttle.razorpay.merchant.entity.Merchant;
 import com.codingshuttle.razorpay.merchant.repository.AppUserRepository;
 import com.codingshuttle.razorpay.merchant.repository.MerchantRepository;
 import com.codingshuttle.razorpay.merchant.service.AuthService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final MerchantRepository merchantRepository;
 
     @Override
+    @Transactional
     public MerchantResponse signup(MerchnantSignupRequest request) {
         if(merchantRepository.existsByEmail(request.email())) {
             throw new RuntimeException(("Merchant with email already exists."+request.email()));
