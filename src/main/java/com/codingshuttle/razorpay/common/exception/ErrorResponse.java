@@ -12,7 +12,6 @@ public record ErrorResponse(
         LocalDateTime timestamp,
         List<FieldError> fieldErrors
 ) {
-
     public record FieldError(String field, String message) { }
 
     public static ErrorResponse of(String errorCode, String errorDescription) {
