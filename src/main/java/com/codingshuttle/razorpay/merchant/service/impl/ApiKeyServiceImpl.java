@@ -4,6 +4,7 @@ import com.codingshuttle.razorpay.common.exception.ResourceNotFoundException;
 import com.codingshuttle.razorpay.common.util.RandomizerUtil;
 import com.codingshuttle.razorpay.merchant.dto.request.CreateApiKeyRequest;
 import com.codingshuttle.razorpay.merchant.dto.response.ApiKeyCreateResponse;
+import com.codingshuttle.razorpay.merchant.dto.response.ApiKeyResponse;
 import com.codingshuttle.razorpay.merchant.entity.ApiKey;
 import com.codingshuttle.razorpay.merchant.entity.Merchant;
 import com.codingshuttle.razorpay.merchant.repository.ApiKeyRepository;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -45,6 +47,18 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         apiKey = apiKeyRepository.save(apiKey);
 
         return new ApiKeyCreateResponse(apiKey.getId(), keyId, rawSecret, request.enviroment());
+    }
 
+    @Override
+    public List<ApiKeyResponse> listByMerchant(UUID merchantId) {
+        return apiKeyRepository.findByMerchant_Id(merchantId).stream()
+                .map(apiKey ->
+                        new ApiKeyResponse(
+                            apiKey.getId(),
+                            apiKey.getKeyId(),
+                            apiKey.getEnvironment(),
+                            apiKey.isEnabled(),
+                            apiKey.getLastUsedAt(), null))
+                .toList();
     }
 }
