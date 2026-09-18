@@ -45,6 +45,5 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
         return new ApiKeyCreateResponse(apiKey.getId(), keyId, rawSecret, request.enviroment());
 
-
     }
 }
