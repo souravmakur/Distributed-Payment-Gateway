@@ -17,6 +17,5 @@ public class RandomizerUtil {
 
         return Base64.getUrlEncoder().withoutPadding().encodeToString(buf);
 
-
     }
 }

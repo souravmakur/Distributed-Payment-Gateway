@@ -1,6 +1,7 @@
 package com.codingshuttle.razorpay.merchant.service.impl;
 
 import com.codingshuttle.razorpay.common.exception.ResourceNotFoundException;
+import com.codingshuttle.razorpay.common.util.RandomizerUtil;
 import com.codingshuttle.razorpay.merchant.dto.request.CreateApiKeyRequest;
 import com.codingshuttle.razorpay.merchant.dto.response.ApiKeyCreateResponse;
 import com.codingshuttle.razorpay.merchant.entity.ApiKey;
@@ -30,8 +31,8 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         Merchant merchant = merchantRepository.findById(merchantId)
                 .orElseThrow(() -> new ResourceNotFoundException("merchant" , merchantId));
 
-        String keyId = "rzp_" + request.enviroment().name().toUpperCase()+"big_random_string";
-        String rawSecret = "big_random_string";
+        String keyId = "rzp_" + request.enviroment().name().toUpperCase()+ RandomizerUtil.randomBase64(24);
+        String rawSecret = RandomizerUtil.randomBase64(24);
 
 
         ApiKey apiKey = ApiKey.builder()
