@@ -28,6 +28,9 @@ public class ApiKey {
     @Column(nullable = false , length = 200)
     private String keySecretHash;
 
+    @Column(nullable = false, length = 200)
+    private String previousKeySecretHash;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private Environment environment;
@@ -37,6 +40,6 @@ public class ApiKey {
     private boolean enabled = true;
 
     private java.time.LocalDateTime createdAt;
-    private java.time.LocalDateTime lastUsedAt;
-    private java.time.LocalDateTime updatedAt;
+    private java.time.LocalDateTime rotatedAt;
+    private java.time.LocalDateTime gracePeriodExpiresAt;
 }

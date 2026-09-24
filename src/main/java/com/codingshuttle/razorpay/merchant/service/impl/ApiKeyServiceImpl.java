@@ -10,6 +10,8 @@ import com.codingshuttle.razorpay.merchant.entity.Merchant;
 import com.codingshuttle.razorpay.merchant.repository.ApiKeyRepository;
 import com.codingshuttle.razorpay.merchant.repository.MerchantRepository;
 import com.codingshuttle.razorpay.merchant.service.ApiKeyService;
+import jakarta.annotation.Nullable;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private final ApiKeyRepository apiKeyRepository;
 
     @Override
+    @Transactional
     public ApiKeyCreateResponse create(UUID merchantId , CreateApiKeyRequest request ) {
         Merchant merchant = merchantRepository.findById(merchantId)
                 .orElseThrow(() -> new ResourceNotFoundException("merchant" , merchantId));
@@ -63,9 +66,27 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
+    @Transactional
     public void revoke(UUID merchantId, UUID keyId) {
         ApiKey key = apiKeyRepository.findById(keyId)
                 .filter(k -> k.getMerchant().getId().equals(merchantId))
                 .orElseThrow(() -> new ResourceNotFoundException("ApiKey", keyId));
+
+        key.setEnabled(false);
+    }
+
+
+    @Override
+    public @Nullable ApiKeyCreateResponse rotate(UUID merchantId , UUID keyId) {
+        ApiKey key = apiKeyRepository.findById(keyId)
+                .filter(k -> k.getMerchant().getId().equals(merchantId))
+                .orElseThrow(() -> new ResourceNotFoundException("ApiKey", keyId));
+
+        String newRawSecret = RandomizerUtil.randomBase64(40);
+        key.setPreviousKeySecretHash(key.getKeySecretHash());
+        key.setKeySecretHash(newRawSecret); //TODO : encode with Bcrypt Password encoder
+        key.set
+
+
     }
 }
