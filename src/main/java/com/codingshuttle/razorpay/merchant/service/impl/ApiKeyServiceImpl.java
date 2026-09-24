@@ -61,4 +61,11 @@ public class ApiKeyServiceImpl implements ApiKeyService {
                             apiKey.getLastUsedAt(), null))
                 .toList();
     }
+
+    @Override
+    public void revoke(UUID merchantId, UUID keyId) {
+        ApiKey key = apiKeyRepository.findById(keyId)
+                .filter(k -> k.getMerchant().getId().equals(merchantId))
+                .orElseThrow(() -> new ResourceNotFoundException("ApiKey", keyId));
+    }
 }
