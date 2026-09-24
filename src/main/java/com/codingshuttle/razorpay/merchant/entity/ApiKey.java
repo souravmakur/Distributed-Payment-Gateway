@@ -28,7 +28,7 @@ public class ApiKey {
     @Column(nullable = false , length = 200)
     private String keySecretHash;
 
-    @Column(nullable = false, length = 200)
+    @Column(length = 200)
     private String previousKeySecretHash;
 
     @Enumerated(EnumType.STRING)
@@ -41,5 +41,6 @@ public class ApiKey {
 
     private java.time.LocalDateTime createdAt;
     private java.time.LocalDateTime rotatedAt;
+    private java.time.LocalDateTime lastUsedAt;
     private java.time.LocalDateTime gracePeriodExpiresAt;
 }

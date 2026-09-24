@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -77,16 +78,18 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
 
     @Override
-    public @Nullable ApiKeyCreateResponse rotate(UUID merchantId , UUID keyId) {
-        ApiKey key = apiKeyRepository.findById(keyId)
+    public @Nullable ApiKeyCreateResponse rotateKey(UUID merchantId , UUID keyId) {
+        ApiKey apiKey = apiKeyRepository.findById(keyId)
                 .filter(k -> k.getMerchant().getId().equals(merchantId))
                 .orElseThrow(() -> new ResourceNotFoundException("ApiKey", keyId));
 
         String newRawSecret = RandomizerUtil.randomBase64(40);
-        key.setPreviousKeySecretHash(key.getKeySecretHash());
-        key.setKeySecretHash(newRawSecret); //TODO : encode with Bcrypt Password encoder
-        key.set
+        apiKey.setPreviousKeySecretHash(apiKey.getKeySecretHash());
+        apiKey.setKeySecretHash(newRawSecret); //TODO : encode with Bcrypt Password encoder
+        apiKey.setRotatedAt(LocalDateTime.now());
+        apiKey.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24));
+        apiKey = apiKeyRepository.save(apiKey);
 
-
+        return new ApiKeyCreateResponse(apiKey.getId(), apiKey.getKeyId(), newRawSecret, apiKey.getEnvironment());
     }
 }
