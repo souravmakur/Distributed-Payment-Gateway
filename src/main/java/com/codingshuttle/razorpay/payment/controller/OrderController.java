@@ -3,6 +3,7 @@ package com.codingshuttle.razorpay.payment.controller;
 import com.codingshuttle.razorpay.payment.dto.request.CreateOrderRequest;
 import com.codingshuttle.razorpay.payment.dto.response.OrderResponse;
 import com.codingshuttle.razorpay.payment.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class OrderController {
     UUID merchantId = UUID.fromString("losdhf-alisudgfd-asdfd");  //TODO: replace it with merchant context
 
     @PostMapping
-    public ResponseEntity<OrderResponse> create (@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<OrderResponse> create (@RequestBody @Valid CreateOrderRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(orderService.create(merchantId, request));
     }

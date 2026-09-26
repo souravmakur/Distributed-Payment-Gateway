@@ -39,6 +39,7 @@ public class OrderRecord {
     private OrderStatus orderStatus = OrderStatus.CREATED;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer attempts = 0;
 
     @JdbcTypeCode((SqlTypes.JSON)) //this will help us to convert the json code that is getting stored into the db as a map.

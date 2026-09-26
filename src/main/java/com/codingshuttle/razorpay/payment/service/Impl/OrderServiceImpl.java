@@ -43,6 +43,7 @@ public class OrderServiceImpl implements OrderService {
 
         order = orderRepository.save(order);
 
+// todo :         publish kakfa event about order creation
         return new OrderResponse(order.getId(),
                 order.getMerchantId(),
                 order.getReceipt(),
