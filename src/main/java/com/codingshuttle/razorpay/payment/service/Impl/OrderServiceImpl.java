@@ -40,6 +40,17 @@ public class OrderServiceImpl implements OrderService {
                 .expiresAt(request.expiresAt() != null ? request.expiresAt() :
                         LocalDateTime.now().plusMinutes(defaultOrderExpiryMinutes))
                 .build();
-        return null;
+
+        order = orderRepository.save(order);
+
+        return new OrderResponse(order.getId(),
+                order.getMerchantId(),
+                order.getReceipt(),
+                order.getAmount(),
+                order.getOrderStatus(),
+                order.getAttempts(),
+                order.getNotes(),
+                order.getExpiresAt(),
+                null);
     }
 }
