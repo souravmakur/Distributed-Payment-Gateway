@@ -1,5 +1,6 @@
 package com.codingshuttle.razorpay.payment.service.Impl;
 
+import com.codingshuttle.razorpay.common.exception.DuplicateResourceException;
 import com.codingshuttle.razorpay.payment.dto.request.CreateOrderRequest;
 import com.codingshuttle.razorpay.payment.dto.response.OrderResponse;
 import com.codingshuttle.razorpay.payment.repository.OrderRepository;
@@ -20,7 +21,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponse create(UUID merchantId , CreateOrderRequest request) {
-        if(orderRe)
+        if((request.receipt() != null) && orderRepository.existsByMerchantIdAnReceipt(merchantId, request.receipt())) {
+            throw new DuplicateResourceException("ORDER_RECEIPT_DUPLICATE" , "Order with receipt already exists: " + request.receipt());
+        }
         return null;
     }
 }

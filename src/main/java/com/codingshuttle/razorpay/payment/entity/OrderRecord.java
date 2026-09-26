@@ -3,6 +3,7 @@ package com.codingshuttle.razorpay.payment.entity;
 import com.codingshuttle.razorpay.common.entity.Money;
 import com.codingshuttle.razorpay.common.enums.OrderStatus;
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -12,6 +13,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "order_record")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderRecord {
 
     @Id
