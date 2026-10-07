@@ -2,8 +2,10 @@ package com.codingshuttle.razorpay.payment.service.Impl;
 
 import com.codingshuttle.razorpay.common.enums.OrderStatus;
 import com.codingshuttle.razorpay.common.exception.DuplicateResourceException;
+import com.codingshuttle.razorpay.common.exception.ResourceNotFoundException;
 import com.codingshuttle.razorpay.payment.dto.request.CreateOrderRequest;
 import com.codingshuttle.razorpay.payment.dto.response.OrderResponse;
+import com.codingshuttle.razorpay.payment.dto.response.PaymentResponse;
 import com.codingshuttle.razorpay.payment.entity.OrderRecord;
 import com.codingshuttle.razorpay.payment.repository.OrderRepository;
 import com.codingshuttle.razorpay.payment.service.OrderService;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -53,5 +56,27 @@ public class OrderServiceImpl implements OrderService {
                 order.getNotes(),
                 order.getExpiresAt(),
                 null);
+    }
+
+    @Override
+    public OrderResponse getById(UUID merchantId, UUID orderId) {
+        OrderRecord order = orderRepository.findByIdAndMerchantId(orderId, merchantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order" , orderId));
+        return new OrderResponse(order.getId(), order.getMerchantId(),order.getReceipt(), order.getAmount(), order.getOrderStatus(),order.getAttempts(), order.getNotes(), order.getExpiresAt(), null);
+    }
+
+    @Override
+    public OrderResponse cancel(UUID merchantId , UUID orderId) {
+        OrderRecord order = orderRepository.findByIdAndMerchantId(orderId , merchantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order" , orderId));
+
+        if(order.getOrderStatus() == OrderStatus.CANCELED || order.getOrderStatus() == OrderStatus.PAID) {
+
+        }
+    }
+
+    @Override
+    public List<PaymentResponse> listPayments(UUID merchantId , UUID orderId) {
+        return List.of();
     }
 }
