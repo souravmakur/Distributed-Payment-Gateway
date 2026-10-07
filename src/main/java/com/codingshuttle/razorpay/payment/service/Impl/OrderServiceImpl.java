@@ -1,6 +1,7 @@
 package com.codingshuttle.razorpay.payment.service.Impl;
 
 import com.codingshuttle.razorpay.common.enums.OrderStatus;
+import com.codingshuttle.razorpay.common.exception.BusinessRuleViolationException;
 import com.codingshuttle.razorpay.common.exception.DuplicateResourceException;
 import com.codingshuttle.razorpay.common.exception.ResourceNotFoundException;
 import com.codingshuttle.razorpay.payment.dto.request.CreateOrderRequest;
@@ -71,8 +72,13 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order" , orderId));
 
         if(order.getOrderStatus() == OrderStatus.CANCELED || order.getOrderStatus() == OrderStatus.PAID) {
-
+            throw new BusinessRuleViolationException("ORDER_CANNOT_CANCEL" ,
+                    "Cannot cancel order with status: "+order.getOrderStatus().name());
         }
+        order.setOrderStatus(OrderStatus.CANCELED);
+        order = orderRepository.save(order);
+
+        return new OrderResponse(order.getId(), order.getMerchantId(),order.getReceipt(), order.getAmount(), order.getOrderStatus(),order.getAttempts(), order.getNotes(), order.getExpiresAt(), null);
     }
 
     @Override
