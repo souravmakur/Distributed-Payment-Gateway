@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
         if(merchantRepository.existsByEmail(request.email())) {
             throw new RuntimeException(("Merchant with email already exists."+request.email()));
         }
-        Merchant merchant = Merchant.builder()
+        Merchant merchant = Merchant.builder() //DTO becoming an entity
                 .businessName(request.businessName())
                 .businessType(request.businessType())
                 .name(request.name())
