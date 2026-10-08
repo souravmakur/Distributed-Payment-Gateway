@@ -8,12 +8,16 @@ import com.codingshuttle.razorpay.payment.dto.request.CreateOrderRequest;
 import com.codingshuttle.razorpay.payment.dto.response.OrderResponse;
 import com.codingshuttle.razorpay.payment.dto.response.PaymentResponse;
 import com.codingshuttle.razorpay.payment.entity.OrderRecord;
+import com.codingshuttle.razorpay.payment.entity.Payment;
+import com.codingshuttle.razorpay.payment.mapper.PaymentMapper;
 import com.codingshuttle.razorpay.payment.repository.OrderRepository;
+import com.codingshuttle.razorpay.payment.repository.PaymentRepository;
 import com.codingshuttle.razorpay.payment.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,14 +27,18 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final PaymentRepository paymentRepository;
+    private final PaymentMapper paymentMapper;
 
     @Value("${payment.order.default-order-expiry-minutes:30}")
     private int defaultOrderExpiryMinutes;
 
     @Override
+    @Transactional
     public OrderResponse create(UUID merchantId , CreateOrderRequest request) {
         if((request.receipt() != null) && orderRepository.existsByMerchantIdAnReceipt(merchantId, request.receipt())) {
             throw new DuplicateResourceException("ORDER_RECEIPT_DUPLICATE" , "Order with receipt already exists: " + request.receipt());
@@ -67,6 +75,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderResponse cancel(UUID merchantId , UUID orderId) {
         OrderRecord order = orderRepository.findByIdAndMerchantId(orderId , merchantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order" , orderId));
@@ -83,6 +92,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<PaymentResponse> listPayments(UUID merchantId , UUID orderId) {
-        return List.of();
+        OrderRecord order = orderRepository.findByIdAndMerchantId(orderId , merchantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order" , orderId));
+
+        List<Payment> paymentList = paymentRepository.findByOrder_Id(order);
+        return paymentList.stream().map(
+
+        )
     }
 }
