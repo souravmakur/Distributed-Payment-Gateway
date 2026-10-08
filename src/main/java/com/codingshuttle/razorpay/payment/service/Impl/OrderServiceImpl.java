@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -40,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderResponse create(UUID merchantId , CreateOrderRequest request) {
-        if((request.receipt() != null) && orderRepository.existsByMerchantIdAnReceipt(merchantId, request.receipt())) {
+        if((request.receipt() != null) && orderRepository.existsByMerchantIdAndReceipt(merchantId, request.receipt())) {
             throw new DuplicateResourceException("ORDER_RECEIPT_DUPLICATE" , "Order with receipt already exists: " + request.receipt());
         }
         OrderRecord order = OrderRecord.builder()
@@ -96,8 +97,6 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order" , orderId));
 
         List<Payment> paymentList = paymentRepository.findByOrder_Id(order);
-        return paymentList.stream().map(
-
-        )
+        return paymentMapper.toResponseList(paymentList);
     }
 }

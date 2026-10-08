@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository <OrderRecord, UUID> {
-    boolean existsByMerchantIdAnReceipt(UUID merchantId, @Size(max = 100) String receipt);
+    boolean existsByMerchantIdAndReceipt(UUID merchantId, @Size(max = 100) String receipt);
 
     Optional<OrderRecord> findByIdAndMerchantId(UUID orderId, UUID merchantId);
 }
