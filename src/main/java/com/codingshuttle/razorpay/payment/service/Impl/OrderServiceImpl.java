@@ -9,6 +9,7 @@ import com.codingshuttle.razorpay.payment.dto.response.OrderResponse;
 import com.codingshuttle.razorpay.payment.dto.response.PaymentResponse;
 import com.codingshuttle.razorpay.payment.entity.OrderRecord;
 import com.codingshuttle.razorpay.payment.entity.Payment;
+import com.codingshuttle.razorpay.payment.mapper.OrderMapper;
 import com.codingshuttle.razorpay.payment.mapper.PaymentMapper;
 import com.codingshuttle.razorpay.payment.repository.OrderRepository;
 import com.codingshuttle.razorpay.payment.repository.PaymentRepository;
@@ -34,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final OrderMapper orderMapper;
 
     @Value("${payment.order.default-order-expiry-minutes:30}")
     private int defaultOrderExpiryMinutes;
@@ -48,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
                 .receipt(request.receipt())
                 .amount(request.amount())
                 .notes(request.notes())
+
                 .merchantId(merchantId)
                 .orderStatus(OrderStatus.CREATED)
                 .expiresAt(request.expiresAt() != null ? request.expiresAt() :
@@ -72,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse getById(UUID merchantId, UUID orderId) {
         OrderRecord order = orderRepository.findByIdAndMerchantId(orderId, merchantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order" , orderId));
-        return new OrderResponse(order.getId(), order.getMerchantId(),order.getReceipt(), order.getAmount(), order.getOrderStatus(),order.getAttempts(), order.getNotes(), order.getExpiresAt(), null);
+        return orderMapper.toResponse(order);
     }
 
     @Override
@@ -88,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(OrderStatus.CANCELED);
         order = orderRepository.save(order);
 
-        return new OrderResponse(order.getId(), order.getMerchantId(),order.getReceipt(), order.getAmount(), order.getOrderStatus(),order.getAttempts(), order.getNotes(), order.getExpiresAt(), null);
+        return orderMapper.toResponse(order);
     }
 
     @Override
