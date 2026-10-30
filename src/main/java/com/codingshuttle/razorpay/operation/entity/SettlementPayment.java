@@ -1,5 +1,6 @@
 package com.codingshuttle.razorpay.operation.entity;
 
+import com.codingshuttle.razorpay.common.entity.BaseEntity;
 import jakarta.persistence.*;
 
 @Entity
