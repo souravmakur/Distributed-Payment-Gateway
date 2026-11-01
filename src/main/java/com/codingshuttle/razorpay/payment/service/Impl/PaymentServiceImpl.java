@@ -11,6 +11,7 @@ import com.codingshuttle.razorpay.payment.entity.Payment;
 import com.codingshuttle.razorpay.payment.gateway.PaymentGatewayRouter;
 import com.codingshuttle.razorpay.payment.gateway.dto.PaymentRequest;
 import com.codingshuttle.razorpay.payment.gateway.dto.PaymentResult;
+import com.codingshuttle.razorpay.payment.mapper.PaymentMapper;
 import com.codingshuttle.razorpay.payment.repository.OrderRepository;
 import com.codingshuttle.razorpay.payment.repository.PaymentRepository;
 import com.codingshuttle.razorpay.payment.service.PaymentService;
@@ -28,6 +29,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentGatewayRouter paymentGatewayRouter;
+    private final PaymentMapper paymentMapper;
 
     @Override
     public PaymentResponse initiate(UUID merchantId, PaymentInitRequest request) {
@@ -58,6 +60,20 @@ public class PaymentServiceImpl implements PaymentService {
                 request.methodDetails());
         PaymentResult result = paymentGatewayRouter.initiate(paymentRequest);
 
-        return null;
+        switch (result) {
+            case PaymentResult.Pending pending -> payment.setProcessorReference(pending.registrationRef());
+            case PaymentResult.Failure failure -> {
+                payment.setStatus(PaymentStatus.FAILED);
+                payment.setErrorCode(failure.errorCode());
+                payment.setErrorDescription(failure.errorDescription());
+            }
+        }
+
+        payment = paymentRepository.save(payment);
+        orderRepository.save(order);
+
+        return paymentMapper.toResponse(payment);
+
+
     }
 }

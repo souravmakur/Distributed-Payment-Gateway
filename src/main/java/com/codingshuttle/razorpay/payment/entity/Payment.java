@@ -59,6 +59,9 @@ public class Payment {
     private String bankReference;
 
     @Column(length = 100)
+    private String processorReference;
+
+    @Column(length = 100)
     private String errorCode;
 
     @Column(length = 255)
