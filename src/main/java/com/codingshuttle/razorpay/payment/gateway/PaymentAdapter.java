@@ -1,8 +1,10 @@
 package com.codingshuttle.razorpay.payment.gateway;
 
+import com.codingshuttle.razorpay.payment.entity.Payment;
 import com.codingshuttle.razorpay.payment.gateway.dto.PaymentRequest;
+import com.codingshuttle.razorpay.payment.gateway.dto.PaymentResult;
 
 public interface PaymentAdapter {
 
-    void initiate(PaymentRequest request);
+    PaymentResult initiate(PaymentRequest request);
 }
