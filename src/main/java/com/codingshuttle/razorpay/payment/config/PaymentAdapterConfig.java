@@ -1,4 +1,4 @@
-package com.codingshuttle.razorpay.payment.gateway.config;
+package com.codingshuttle.razorpay.payment.config;
 
 import com.codingshuttle.razorpay.common.enums.PaymentMethod;
 import com.codingshuttle.razorpay.payment.gateway.PaymentAdapter;
