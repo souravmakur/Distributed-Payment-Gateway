@@ -8,8 +8,6 @@ import java.util.Map;
 public record PaymentProcessorRequest (
         PaymentMethod method,
         Money amount,
-        String pan,
-        String expiry,
-        Map<String, Object> methodDetails;
+        Map<String, Object> methodDetails
 ){
 }
